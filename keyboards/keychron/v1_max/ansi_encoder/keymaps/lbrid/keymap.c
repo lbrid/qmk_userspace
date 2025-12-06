@@ -84,7 +84,13 @@ void leader_start_user(void) {
 void leader_end_user(void) {
     if (leader_sequence_one_key(KC_S)) {
         // Leader + S = send email signature
-        SEND_STRING("Kind regards\nLouis");
+        SEND_STRING("Kind regards\nLouis\n");
+    }
+    if (leader_sequence_one_key(KC_L)) {
+        // Leader + L = select line
+        SEND_STRING(SS_TAP(X_END));
+        SEND_STRING(SS_DOWN(X_LSFT));
+        SEND_STRING(SS_TAP(X_HOME));
     }
 }
 
