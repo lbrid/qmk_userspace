@@ -17,12 +17,23 @@
 #include QMK_KEYBOARD_H
 #include "keychron_common.h"
 
+// -------------- PROTOTYPES AND ENUMS -------------- //
+
+char *get_date(void);
+
 enum layers {
     MAC_BASE,
     MAC_FN,
     WIN_BASE,
     WIN_FN,
 };
+
+enum custom_keycodes {
+    EN_DASH = SAFE_RANGE,
+    EM_DASH,
+};
+
+// -------------- KEYMAP LAYERS -------------- //
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -69,35 +80,77 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 };
 #endif // ENCODER_MAP_ENABLE
 
+// -------------- COMBOS AND MACROS -------------- //
+
 // Combos
-const uint16_t PROGMEM home_home[] = {KC_HOME, KC_HOME, COMBO_END};
+const uint16_t PROGMEM two_home[]    = {KC_HOME, KC_HOME, COMBO_END};
+const uint16_t PROGMEM two_minus[]   = {KC_MINS, KC_MINS, COMBO_END};
+const uint16_t PROGMEM three_minus[] = {KC_MINS, KC_MINS, KC_MINS, COMBO_END};
 
 combo_t key_combos[] = {
-    COMBO(home_home, KC_END), // Hitting HOME twice = END
+    COMBO(two_home, KC_END),     // Tap HOME x2 = END
+    COMBO(two_minus, EN_DASH),   // Tap MINUS x2 = EN_DASH
+    COMBO(three_minus, EM_DASH), // Tap MINUS x3 = EM_DASH
 };
 
-// Leader key
+// Leader shortcuts
 void leader_start_user(void) {
     // TODO: Add any functionality when leader is pressed
 }
 
 void leader_end_user(void) {
+    // Leader + S = print email signature
     if (leader_sequence_one_key(KC_S)) {
-        // Leader + S = send email signature
         SEND_STRING("Kind regards\nLouis\n");
     }
+    // Leader + L = select line
     if (leader_sequence_one_key(KC_L)) {
-        // Leader + L = select line
-        SEND_STRING(SS_TAP(X_END));
-        SEND_STRING(SS_DOWN(X_LSFT));
-        SEND_STRING(SS_TAP(X_HOME));
+        SEND_STRING(SS_TAP(X_END) SS_LSFT(SS_TAP(X_HOME)));
+    }
+    // Leader + W = select word
+    if (leader_sequence_one_key(KC_W)) {
+        SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
+    }
+    // Leader + J = join line
+    if (leader_sequence_one_key(KC_J)) {
+        SEND_STRING(SS_TAP(X_END) SS_TAP(X_DEL) SS_TAP(X_SPC));
+    }
+    // Leader + D = print date
+    if (leader_sequence_one_key(KC_D)) {
+        SEND_STRING(get_date());
+    }
+    // Leader + D + T = print date and time
+    if (leader_sequence_two_keys(KC_D, KC_T)) {
+        SEND_STRING(get_date());
+        SEND_STRING(__TIME__);
     }
 }
 
-// Processing
+// Process macros
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
+
+    switch (keycode) {
+        case EN_DASH:
+            if (record->event.pressed) {
+                SEND_STRING("–");
+            }
+            break;
+        case EM_DASH:
+            if (record->event.pressed) {
+                SEND_STRING("—");
+            }
+            break;
+    }
+
     return true;
+}
+
+// -------------- HELPER FUNCTIONS -------------- //
+
+char *get_date() {
+    static char date[] = {__DATE__[4], __DATE__[5], ' ', __DATE__[0], __DATE__[1], __DATE__[2], ' ', __DATE__[7], __DATE__[8], __DATE__[9], __DATE__[10], '\0'};
+    return date;
 }
