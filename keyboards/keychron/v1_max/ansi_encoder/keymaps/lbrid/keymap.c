@@ -77,16 +77,16 @@ void leader_start_user(void) {
 }
 
 void leader_end_user(void) {
-    // Leader + S = send default signature - "Kind Regards"
+    // Leader + S = print signature default - "Kind Regards"
     if (leader_sequence_one_key(KC_S)) {
         SEND_STRING("Kind regards\nLouis\n");
     }
-    // Leader + S + T = send "Thanks" signature
+    // Leader + S + T = print signature "Thanks"
     if (leader_sequence_two_keys(KC_S, KC_T)) {
         SEND_STRING("Thanks\nLouis\n");
     }
-    // Leader + S + P = send "Privileged & Confidential"
-    if (leader_sequence_two_keys(KC_S, KC_P)) {
+    // Leader + P = print "Privileged & Confidential"
+    if (leader_sequence_one_key(KC_P)) {
         SEND_STRING("Privileged & Confidential");
     }
     // Leader + L = select line
