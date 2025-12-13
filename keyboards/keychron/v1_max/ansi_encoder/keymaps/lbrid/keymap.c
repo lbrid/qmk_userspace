@@ -79,11 +79,11 @@ void leader_start_user(void) {
 void leader_end_user(void) {
     // Leader + S = print signature default - "Kind Regards"
     if (leader_sequence_one_key(KC_S)) {
-        SEND_STRING("Kind regards\nLouis\n");
+        SEND_STRING("Kind regards\nLouis");
     }
     // Leader + S + T = print signature "Thanks"
     if (leader_sequence_two_keys(KC_S, KC_T)) {
-        SEND_STRING("Thanks\nLouis\n");
+        SEND_STRING("Thanks\nLouis");
     }
     // Leader + P = print "Privileged & Confidential"
     if (leader_sequence_one_key(KC_P)) {
@@ -100,6 +100,10 @@ void leader_end_user(void) {
     // Leader + J = join line
     if (leader_sequence_one_key(KC_J)) {
         SEND_STRING(SS_TAP(X_END) SS_TAP(X_DEL) SS_TAP(X_SPC));
+    }
+    // Leader + A = print line of asterixes
+    if (leader_sequence_one_key(KC_A)) {
+        SEND_STRING("*******************");
     }
 }
 
