@@ -79,15 +79,11 @@ void leader_start_user(void) {
 void leader_end_user(void) {
     // Leader + S = print signature default - "Kind Regards"
     if (leader_sequence_one_key(KC_S)) {
-        SEND_STRING("Kind regards\nLouis");
+        SEND_STRING("Kind regards\nLouis" SS_TAP(X_UP) SS_TAP(X_UP));
     }
     // Leader + S + T = print signature "Thanks"
     if (leader_sequence_two_keys(KC_S, KC_T)) {
-        SEND_STRING("Thanks\nLouis");
-    }
-    // Leader + P = print "Privileged & Confidential"
-    if (leader_sequence_one_key(KC_P)) {
-        SEND_STRING("Privileged & Confidential");
+        SEND_STRING("Thanks\nLouis" SS_TAP(X_UP) SS_TAP(X_UP));
     }
     // Leader + L = select line
     if (leader_sequence_one_key(KC_L)) {
@@ -97,13 +93,17 @@ void leader_end_user(void) {
     if (leader_sequence_one_key(KC_W)) {
         SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
     }
+    // Leader + P = select paragraph (F8 x 3 - for Microsoft Word)
+    if (leader_sequence_one_key(KC_P)) {
+        SEND_STRING(SS_TAP(X_F8) SS_TAP(X_F8) SS_TAP(X_F8));
+    }
     // Leader + J = join line
     if (leader_sequence_one_key(KC_J)) {
         SEND_STRING(SS_TAP(X_END) SS_TAP(X_DEL) SS_TAP(X_SPC));
     }
     // Leader + A = print line of asterixes
     if (leader_sequence_one_key(KC_A)) {
-        SEND_STRING("*******************");
+        SEND_STRING("* * * * * * * * * *");
     }
 }
 
